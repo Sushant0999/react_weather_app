@@ -1,9 +1,9 @@
 package com.jet.api.service;
 
 
-import com.jet.api.dto.JobType;
-import com.jet.api.dto.Job;
+import com.jet.api.dto.*;
 import com.jet.api.exception.CustomException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -11,6 +11,8 @@ import java.util.*;
 
 @Service
 public class JobService {
+    @Autowired
+    private StorageProfileService profileService;
     private final ArrayList<Job> jobsList = new ArrayList<>();
 
     public Job addJobs(Job job) {
@@ -28,6 +30,9 @@ public class JobService {
         //setting date
 //        job.setCreatedOn(LocalDate.parse(randomDate));
         job.setCreatedOn(currentDate);
+        StorageProfile storageProfile = profileService.serviceProfileList.get(0);
+        job.setDestinationStorageProfile(storageProfile);
+        job.setSourceStorageProfile(storageProfile);
         System.out.println(job);
         job.setJobId(uuid);
         jobsList.add(job);
