@@ -1,11 +1,12 @@
 package com.jet.api.service;
 
-import com.fasterxml.jackson.core.JsonParser;
+
 import com.jet.api.dto.JobType;
 import com.jet.api.dto.Job;
 import com.jet.api.exception.CustomException;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.*;
 
 @Service
@@ -17,8 +18,17 @@ public class JobService {
             throw new CustomException("FIELDS ARE EMPTY");
         }
         UUID uuid = UUID.randomUUID();
-        Date date = job.getCreatedOn();
-        System.out.println();
+        LocalDate currentDate = LocalDate.now();
+        //creating custom date
+//        String randomDate = "2021-01-22";
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+//        LocalDate customDate = LocalDate.parse(randomDate, formatter);
+        //setting uuid
+        job.setJobId(uuid);
+        //setting date
+//        job.setCreatedOn(LocalDate.parse(randomDate));
+        job.setCreatedOn(currentDate);
+        System.out.println(job);
         job.setJobId(uuid);
         jobsList.add(job);
         return job;
