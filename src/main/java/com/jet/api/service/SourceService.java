@@ -23,7 +23,11 @@ public class SourceService {
         LocalDate currentDate = LocalDate.now();
         source.setAccountId(uuid);
         source.setCreatedOn(currentDate);
-        StorageProfile service = profileService.serviceProfileList.get(0);
+        int size = profileService.serviceProfileList.size();
+        if(size == 0){
+            throw new CustomException("CREATE A PROFILE FIRST");
+        }
+        StorageProfile service = profileService.serviceProfileList.get(size - 1);
         source.setStorageProfileId(service);
         System.out.println(source);
         sourceList.add(source);

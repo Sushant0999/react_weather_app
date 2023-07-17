@@ -2,6 +2,7 @@ package com.jet.api.service;
 
 import com.jet.api.dto.Destination;
 import com.jet.api.dto.StorageProfile;
+import com.jet.api.exception.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +22,11 @@ public class DestinationService {
         LocalDate currentDate = LocalDate.now();
         destination.setAccountId(uuid);
         destination.setCreatedOn(currentDate);
-        StorageProfile service = profileService.serviceProfileList.get(0);
+        int size = profileService.serviceProfileList.size();
+        if(size == 0){
+            throw new CustomException("CREATE A PROFILE FIRST");
+        }
+        StorageProfile service = profileService.serviceProfileList.get(size - 1);
         destination.setStorageProfileId(service);
         System.out.println(destination);
         destinationList.add(destination);
