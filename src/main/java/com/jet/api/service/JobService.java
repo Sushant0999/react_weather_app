@@ -30,7 +30,11 @@ public class JobService {
         //setting date
 //        job.setCreatedOn(LocalDate.parse(randomDate));
         job.setCreatedOn(currentDate);
-        StorageProfile storageProfile = profileService.serviceProfileList.get(0);
+        int size = profileService.serviceProfileList.size();
+        if(size == 0){
+            throw new CustomException("CREATE A PROFILE FIRST");
+        }
+        StorageProfile storageProfile = profileService.serviceProfileList.get(size - 1);
         job.setDestinationStorageProfile(storageProfile);
         job.setSourceStorageProfile(storageProfile);
         System.out.println(job);
