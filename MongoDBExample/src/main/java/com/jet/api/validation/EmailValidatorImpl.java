@@ -1,5 +1,7 @@
 package com.jet.api.validation;
 
+import com.jet.api.exception.CustomException;
+
 import java.util.regex.Pattern;
 
 public class EmailValidatorImpl implements EmailValidator {
@@ -9,6 +11,9 @@ public class EmailValidatorImpl implements EmailValidator {
 
     @Override
     public boolean emailValidator(String email) {
-        return email != null && regex.matcher(email).matches();
+        if(email.isEmpty() || email.isBlank() || email.equals("null")){
+            throw new CustomException("INVALID EMAIL");
+        }
+        return regex.matcher(email).matches();
     }
 }

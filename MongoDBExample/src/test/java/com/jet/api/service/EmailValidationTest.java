@@ -9,8 +9,8 @@ public class EmailValidationTest {
     private EmailValidator emailValidator = new EmailValidatorImpl();
 
     @ParameterizedTest
-    @ValueSource(strings = {"username@domain.com"})
-    void checkEmail(String email){
+    @ValueSource(strings = {"username@domain.com", "user_name@xyz.com", "null", "", "username.@domain.com", "username@.com"})
+    void checkEmail(String email) {
         emailValidator.emailValidator(email);
     }
 
