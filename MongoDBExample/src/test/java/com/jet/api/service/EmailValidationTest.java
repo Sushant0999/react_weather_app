@@ -6,12 +6,11 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 public class EmailValidationTest {
-    private EmailValidator emailValidator = new EmailValidatorImpl();
+    private final EmailValidator emailValidator = new EmailValidatorImpl();
 
     @ParameterizedTest
-    @ValueSource(strings = {"username@domain.com", "user_name@xyz.com", "null", "", "username.@domain.com", "username@.com"})
+    @ValueSource(strings = {"username@domain.com", "user_name@xyz.com", "null", "", "username.@domain.com", "username@.com", " "})
     void checkEmail(String email) {
         emailValidator.emailValidator(email);
     }
-
 }
