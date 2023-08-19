@@ -1,59 +1,64 @@
 import { Box, Button, Container, Grid } from '@mui/material'
-
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import SearchBar from '../utils/SearchBar'
 import Card1 from '../utils/Card1'
 import Card4 from '../utils/Card4'
 import Card3 from '../utils/Card3'
-// import Img from "../images/grey-cloud.jpg"
 import Logo from '../utils/Logo'
-
-
-const styles = {
-    container: {
-        display: 'flex',
-        position: 'relative',
-        color: "white",
-        /* Setting the size of the upper layer to 80% of the screen size*/
-
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        //top right bottom left
-        margin: '30px 50px 10px 50px',
-        // padding : '5px',
-
-        /*the alpha value controls the transparency*/
-        // background: 'rgba(255, 255, 255, 0.3)',
-
-
-        /*Adding the shadow*/
-        boxShadow: '0 8px 32px 0 rgba(0, 0, 0, 0.18)',
-
-        /* Adding our borders*/
-        borderRadius: '30px',
-        border: '1px solid rgba( 255, 255, 255, 0.18 )',
-        zIndex: '4',
-        // backgroundImage: `url(${Img})`, simply import image and use Image name
-        backgroundImage: `url(https://source.unsplash.com/random/1920x1080/?clouds)`,
-
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no - repeat',
-        backgroundSize: 'cover'
-    }
-}
-
 
 function dateTime() {
     var today = new Date();
     var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
     var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
     var dateTime = date + ' ' + time;
-    console.log(dateTime);
+    // console.log(dateTime);
     return dateTime;
 }
 
 
-export default function Homepage() {
+export default function Homepage({ imageValue, weather }) {
+    const [humidityValue, setHumidityValue] = useState();
+    // setHumidityValue(weather.list?.[0].main["humidity"]);
+    useEffect(() => {
+        if (weather && weather?.list && weather?.list.length > 0) {
+            setHumidityValue(weather.list[0].main["humidity"]);
+        }
+    }, [weather]);
+    // console.log(humidityValue);
+
+    const styles = {
+        container: {
+            display: 'flex',
+            position: 'relative',
+            color: "white",
+            /* Setting the size of the upper layer to 80% of the screen size*/
+
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            //top right bottom left
+            margin: '30px 50px 10px 50px',
+            // padding : '5px',
+
+            /*the alpha value controls the transparency*/
+            // background: 'rgba(255, 255, 255, 0.3)',
+
+
+            /*Adding the shadow*/
+            boxShadow: '0 8px 32px 0 rgba(0, 0, 0, 0.18)',
+
+            /* Adding our borders*/
+            borderRadius: '30px',
+            border: '1px solid rgba( 255, 255, 255, 0.18 )',
+            zIndex: '4',
+            // backgroundImage: `url(${Img})`, simply import image and use Image name
+            // backgroundImage: `url(https://source.unsplash.com/random/1920x1080/?clouds)`,
+            backgroundImage: `url(${imageValue})`,
+
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no - repeat',
+            backgroundSize: 'cover'
+        }
+    }
     return (
         <div style={styles.container}>
             <Grid container xs={12}>
@@ -65,7 +70,7 @@ export default function Homepage() {
                         <Card1 />
                     </Box>
                     <Box>
-                        <Card3 />
+                        <Card3 setHumidityValue={humidityValue} />
                     </Box>
                     <Box>
                         <Card4 />
@@ -115,6 +120,7 @@ export default function Homepage() {
                     </Container>
                 </Grid>
             </Grid>
+
         </div >
     )
 }
