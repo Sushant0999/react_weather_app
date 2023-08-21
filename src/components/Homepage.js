@@ -5,31 +5,48 @@ import Card1 from '../utils/Card1'
 import Card4 from '../utils/Card4'
 import Card3 from '../utils/Card3'
 import Logo from '../utils/Logo'
-// import rain from '../src/images/rain.gif'
-import Img from "../images/rain.gif"
-
-function dateTime() {
-    var today = new Date();
-    var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
-    var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-    var dateTime = date + ' ' + time;
-    return dateTime;
-}
+import light_rain from "../images/rain.gif"
+import clear_sky from '../images/clear_sky.jpg'
+import broken_clouds from '../images/broken_clouds.jpg'
+import overcast_clouds from '../images/overcast_clouds.jpg'
+import ErrorPage from './ErrorPage'
 
 
 export default function Homepage() {
 
-    // const [weatherCon, setweatherCon] = useState({});
-    // const [imageValue, setImageValue] = useState("");
-
     const { weather, errorMessage } = WeatherData();
-    // console.log(weather.city?.name);
-    // console.log(weather.list[0].main.humidity);
 
     let cityName = weather !== null ? weather.city?.name : '';
     let humidity = weather !== null ? weather.list[0].main.humidity : 0;
-    // console.log(errorMessage);
+    let windSpeed = weather !== null ? weather.list[0].wind.speed : 0;
+    let windMain = weather !== null ? weather.list[0].weather[0].main : '';
+    let description = weather !== null ? weather.list[0].weather[0].description : '';
+    let weatherTime = weather !== null ? weather.list[0].dt_txt : 0;
+    let feelsLike = weather !== null ? weather.list[0].main.feels_like : 0;
+    let currTemp = weather !== null ? weather.list[0].main.temp : 0;
+    let maxTemp = weather !== null ? weather.list[0].main.temp_max : 0;
+    let minTemp = weather !== null ? weather.list[0].main.temp_min : 0;
 
+    let Img = '';
+    let value = description;
+    console.log(value);
+    switch (value) {
+        case "overcast clouds":
+            Img = `${overcast_clouds}`
+            break;
+        case "broken clouds":
+            Img = `${broken_clouds}`
+            break;
+        case "clear sky":
+            Img = `${clear_sky}`
+            break;
+        case "light rain":
+            Img = `${light_rain}`
+            break;
+        default:
+            Img = `${light_rain}`
+            break;
+    }
 
     const styles = {
         container: {
@@ -71,10 +88,10 @@ export default function Homepage() {
                                 <SearchBar />
                             </Box>
                             <Box>
-                                <Card1 />
+                                <Card1 windSpeed={windSpeed} maxTemp={maxTemp} minTemp={minTemp} />
                             </Box>
                             <Box>
-                                <Card3 humidity={humidity}/>
+                                <Card3 humidity={humidity} />
                             </Box>
                             <Box>
                                 <Card4 cityName={cityName} />
@@ -84,25 +101,25 @@ export default function Homepage() {
                             <Container>
                                 <Grid item xs={12}>
                                     <Logo />
-                                    <Container sx={{ justifyContent: 'flex-start', textAlign: 'start' }}>
+                                    <Container sx={{ justifyContent: 'flex-start', textAlign: 'start', paddingTop: '10px', paddingBottom: '20px' }}>
                                         <p>Weather Forcast</p>
                                     </Container>
-                                    <Container>
+                                    <Container sx={{ paddingTop: '20px', paddingBottom: '20px' }}>
                                         <Box fontSize={50} sx={{ textAlign: 'start' }}>
-                                            Strom<br />with heavy rain
+                                            {windMain},<br />{description}
                                         </Box>
                                     </Container>
                                     <Container sx={{ justifyContent: 'flex-start', textAlign: 'start' }}>
-                                        <p>{dateTime()}</p>
+                                        <p>{weatherTime}</p>
                                     </Container>
                                 </Grid>
-                                <Container sx={{ justifyContent: 'flex-start', textAlign: 'start' }}>
-                                    Feels like 22°C. Scattered clouds. Moderate breeze
+                                <Container sx={{ justifyContent: 'flex-start', textAlign: 'start', paddingTop: '10px', paddingBottom: '10px' }}>
+                                    Feels like {feelsLike}°C. {description}
                                 </Container>
                                 <Box height={'20px'}></Box>
                                 <Grid container textAlign={'start'} justifyContent={'start'} spacing={2}>
-                                    <Container sx={{ display: 'flex', flexDirection: 'row', padding: '0' }}>
-                                        <Box fontSize={45}>10*</Box>
+                                    <Container sx={{ display: 'flex', flexDirection: 'row', padding: '20px' }}>
+                                        <Box fontSize={45}>{currTemp}°C</Box>
                                         <Box width={'20px'}></Box>
                                         <Box paddingTop={'3px'}>A 50 percent chance of rain means there is a 50 percent chance for any one spot in the forecast area to get wet during the forecast period.</Box>
                                     </Container>
@@ -115,11 +132,25 @@ export default function Homepage() {
                                             borderRadius: '20px',
                                             margin: '10px',
                                             textAlign: 'start',
-                                            padding: '10px 20px',
+                                            // padding: '10px 20px',
                                         }}
                                     >
                                         See Details
                                     </Button>
+                                </Container>
+                                <Container>
+                                    {<div style={{ display: 'flex' }}>
+                                        {weather.list?.slice(0, 10).map((data, index) => (
+                                            //style={{ border: "1px red solid" }}
+                                            <div key={index} >
+                                                <p>high {data.main.temp_max}°C</p>
+                                                <p>low {data.main.temp_min}°C</p>
+                                                {/* <p>Wind Speed: {data.wind.speed} m/s</p> */}
+                                                <p>humidity {data.main.humidity}%</p>
+                                                {/* <hr /> */}
+                                            </div>
+                                        ))}
+                                    </div>}
                                 </Container>
                             </Container>
                         </Grid>
@@ -128,7 +159,9 @@ export default function Homepage() {
                 </div >
             ) : (
                 <div>
-                    <h1>Loading</h1>
+                    {/* <h1>Loading</h1>
+                    <h2>{errorMessage}</h2> */}
+                    {errorMessage == null ? <h1>Loading</h1> : <ErrorPage errorMessage={errorMessage} />}
                 </div>
             )}
         </div>
