@@ -25,7 +25,7 @@
 //     )
 // }
 
-import { Container, Grid, TextField } from '@mui/material';
+import { Button, Container, Grid, TextField } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import DeviceThermostatIcon from '@mui/icons-material/DeviceThermostat';
 import React from 'react';
@@ -50,7 +50,7 @@ export default function SearchBar() {
                         />
                     </Grid>
                     <Grid item>
-                        <SearchIcon style={{ color: 'white' }} />
+                        <Button>{<SearchIcon style={{ color: 'white' }} />}</Button>
                     </Grid>
                 </Grid>
                 <div style={{ height: '40px' }}></div>
