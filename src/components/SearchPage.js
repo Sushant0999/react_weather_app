@@ -1,6 +1,8 @@
+import React, { useState, useEffect } from 'react'
+import PropTypes from 'prop-types'
+import { useLocation } from 'react-router-dom';
 import { Box, Button, Container, Grid } from '@mui/material'
 import SearchBar from '../utils/SearchBar'
-import WeatherData from '../utils/WeatherData'
 import Card1 from '../utils/Card1'
 import Card4 from '../utils/Card4'
 import Card3 from '../utils/Card3'
@@ -11,16 +13,54 @@ import broken_clouds from '../images/broken_clouds.jpg'
 import overcast_clouds from '../images/overcast_clouds.jpg'
 import ErrorPage from './ErrorPage'
 
+export default function SearchPage() {
 
-export default function Homepage() {
 
-    const { weather, errorMessage } = WeatherData('patna');
+    const location = useLocation(); // Get the current location
 
-    // const handleSearchInAnotherComponent = (inputValue) => {
-    //     console.log('Input value in AnotherComponent:', inputValue);
-    //     setWeather(WeatherData(inputValue));
-    //     // window.location.reload();
-    // };
+    // Parse query parameters from location.search
+    const searchParams = new URLSearchParams(location.search);
+    const inputValue = searchParams.get('inputValue');
+
+    function useWeatherData() {
+
+        const [weather, setWeather] = useState(null);
+        const [isError, setIsError] = useState(false);
+        const [errorMessage, setErrorMessage] = useState('');
+
+
+        async function fetchData() {
+            console.log("value ", inputValue);
+            try {
+                const response = await fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${inputValue}&cnt=16&appid=5ebeb95832d3c8470601e4f254cd547a&units=metric`);
+                const data = await response.json();
+                if (!response.ok) {
+                    throw new Error('Error fetching weather data');
+                }
+                setWeather(data);
+            } catch (error) {
+                setIsError(true);
+                setErrorMessage(error.message);
+            }
+        }
+
+        useEffect(() => {
+            fetchData();
+        }, []);
+
+
+        if (isError) {
+            return { weather: null, errorMessage };
+        }
+
+        if (!weather) {
+            return { weather: null, errorMessage: null };
+        }
+
+        return { weather, errorMessage: null };
+    }
+
+    const { weather, errorMessage } = useWeatherData();
 
     let cityName = weather !== null ? weather.city?.name : '';
     let humidity = weather !== null ? weather.list[0].main.humidity : 0;
@@ -86,7 +126,7 @@ export default function Homepage() {
         <div>
             {weather !== null ? (
                 <div style={styles.container}>
-                    
+
                     <Grid container item xs={12}>
                         <Grid item xs={4} sx={{ border: "0.1px solid white", borderRadius: "15px", backdropFilter: 'blur(5px)' }}>
                             <Box >
@@ -171,4 +211,8 @@ export default function Homepage() {
             )}
         </div>
     )
+}
+
+SearchPage.propTypes = {
+    inputValue: PropTypes.string
 }

@@ -1,11 +1,6 @@
 import { useState, useEffect } from 'react';
 
-export function getText(value) {
-    console.log("this ", value)
-    return value;
-}
-
-function useWeatherData() {
+function useWeatherData(inputValue) {
 
     const [weather, setWeather] = useState(null);
     const [isError, setIsError] = useState(false);
@@ -13,15 +8,7 @@ function useWeatherData() {
 
 
     async function fetchData() {
-        let inputValue = getText();
-        console.log("this is getText", inputValue);
-        if (inputValue === null) {
-            inputValue = 'patna';
-        }
-        else {
-            inputValue = 'moscow';
-        }
-        console.log(inputValue);
+        console.log("value ", inputValue);
         try {
             const response = await fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${inputValue}&cnt=16&appid=5ebeb95832d3c8470601e4f254cd547a&units=metric`);
             const data = await response.json();
@@ -39,6 +26,7 @@ function useWeatherData() {
         fetchData();
     }, []);
 
+    
     if (isError) {
         return { weather: null, errorMessage };
     }
