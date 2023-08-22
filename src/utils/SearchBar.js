@@ -2,11 +2,9 @@ import { Button, Container, Grid, TextField } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import DeviceThermostatIcon from '@mui/icons-material/DeviceThermostat';
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 export default function SearchBar() {
     const [inputValue, setInputValue] = useState('');
-    const navigate = useNavigate();
 
     const handleInputChange = (event) => {
         setInputValue(event.target.value);
@@ -14,7 +12,6 @@ export default function SearchBar() {
 
     const handleSearch1 = () => {
         console.log('Input value from handleSearch:', inputValue);
-        navigate(`/search?inputValue=${inputValue}`);
     };
 
     return (
