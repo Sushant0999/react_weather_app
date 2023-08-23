@@ -8,7 +8,7 @@ function useWeatherData(inputValue) {
 
 
     async function fetchData() {
-        console.log("value ", inputValue);
+        // console.log("value ", inputValue);
         try {
             const response = await fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${inputValue}&cnt=16&appid=5ebeb95832d3c8470601e4f254cd547a&units=metric`);
             const data = await response.json();

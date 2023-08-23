@@ -3,7 +3,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import DeviceThermostatIcon from '@mui/icons-material/DeviceThermostat';
 import React, { useState } from 'react';
 
-export default function SearchBar() {
+export default function SearchBar({ onSearch }) {
     const [inputValue, setInputValue] = useState('');
 
     const handleInputChange = (event) => {
@@ -12,6 +12,7 @@ export default function SearchBar() {
 
     const handleSearch1 = () => {
         console.log('Input value from handleSearch:', inputValue);
+        onSearch(inputValue);
     };
 
     return (

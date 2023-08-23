@@ -10,17 +10,23 @@ import clear_sky from '../images/clear_sky.jpg'
 import broken_clouds from '../images/broken_clouds.jpg'
 import overcast_clouds from '../images/overcast_clouds.jpg'
 import ErrorPage from './ErrorPage'
+import { useState } from 'react'
 
 
 export default function Homepage() {
+    const [inputValue, setInputValue] = useState('chandigarh');
 
-    const { weather, errorMessage } = WeatherData('patna');
+     if (inputValue !== 'chandigarh') {
+        console.log(inputValue)
+    }
 
-    // const handleSearchInAnotherComponent = (inputValue) => {
-    //     console.log('Input value in AnotherComponent:', inputValue);
-    //     setWeather(WeatherData(inputValue));
-    //     // window.location.reload();
-    // };
+    const { weather, errorMessage } = WeatherData(inputValue);
+
+
+    const handleSearch = (inputValue) => {
+        console.log('Input value in AnotherComponent:', inputValue);
+        setInputValue(inputValue);
+    };
 
     let cityName = weather !== null ? weather.city?.name : '';
     let humidity = weather !== null ? weather.list[0].main.humidity : 0;
@@ -35,7 +41,7 @@ export default function Homepage() {
 
     let Img = '';
     let value = description;
-    console.log(value);
+
     switch (value) {
         case "overcast clouds":
             Img = `${overcast_clouds}`
@@ -84,91 +90,105 @@ export default function Homepage() {
 
     return (
         <div>
-            {weather !== null ? (
-                <div style={styles.container}>
-                    
-                    <Grid container item xs={12}>
-                        <Grid item xs={4} sx={{ border: "0.1px solid white", borderRadius: "15px", backdropFilter: 'blur(5px)' }}>
-                            <Box >
-                                <SearchBar />
-                            </Box>
-                            <Box>
-                                <Card1 windSpeed={windSpeed} maxTemp={maxTemp} minTemp={minTemp} />
-                            </Box>
-                            <Box>
-                                <Card3 humidity={humidity} />
-                            </Box>
-                            <Box>
-                                <Card4 cityName={cityName} />
-                            </Box>
-                        </Grid>
-                        <Grid item xs={8} sx={{ backdropFilter: 'blur(1px)', justifyContent: 'space-evenly', backdropFilter: 'blur(1.9px)' }}>
-                            <Container>
-                                <Grid item xs={12}>
-                                    <Logo />
-                                    <Container sx={{ justifyContent: 'flex-start', textAlign: 'start', paddingTop: '10px', paddingBottom: '20px' }}>
-                                        <p>Weather Forcast</p>
-                                    </Container>
-                                    <Container sx={{ paddingTop: '20px', paddingBottom: '20px' }}>
-                                        <Box fontSize={50} sx={{ textAlign: 'start' }}>
-                                            {windMain},<br />{description}
-                                        </Box>
-                                    </Container>
-                                    <Container sx={{ justifyContent: 'flex-start', textAlign: 'start' }}>
-                                        <p>{weatherTime}</p>
+            {(() => {
+                if (weather !== null) {
+                    return (
+                        <div style={styles.container}>
+                            <Grid container item xs={12}>
+                                <Grid item xs={4} sx={{ border: "0.1px solid white", borderRadius: "15px", backdropFilter: 'blur(5px)' }}>
+                                    <Box >
+                                        <SearchBar onSearch={handleSearch} />
+                                    </Box>
+                                    <Box>
+                                        <Card1 windSpeed={windSpeed} maxTemp={maxTemp} minTemp={minTemp} />
+                                    </Box>
+                                    <Box>
+                                        <Card3 humidity={humidity} />
+                                    </Box>
+                                    <Box>
+                                        <Card4 cityName={cityName} />
+                                    </Box>
+                                </Grid>
+                                <Grid item xs={8} sx={{ backdropFilter: 'blur(1px)', justifyContent: 'space-evenly', backdropFilter: 'blur(1.9px)' }}>
+                                    <Container>
+                                        <Grid item xs={12}>
+                                            <Logo />
+                                            <Container sx={{ justifyContent: 'flex-start', textAlign: 'start', paddingTop: '10px', paddingBottom: '20px' }}>
+                                                <p>Weather Forcast</p>
+                                            </Container>
+                                            <Container sx={{ paddingTop: '20px', paddingBottom: '20px' }}>
+                                                <Box fontSize={50} sx={{ textAlign: 'start' }}>
+                                                    {windMain},<br />{description}
+                                                </Box>
+                                            </Container>
+                                            <Container sx={{ justifyContent: 'flex-start', textAlign: 'start' }}>
+                                                <p>{weatherTime}</p>
+                                            </Container>
+                                        </Grid>
+                                        <Container sx={{ justifyContent: 'flex-start', textAlign: 'start', paddingTop: '10px', paddingBottom: '10px' }}>
+                                            Feels like {feelsLike}°C. {description}
+                                        </Container>
+                                        <Box height={'20px'}></Box>
+                                        <Grid container textAlign={'start'} justifyContent={'start'} spacing={2}>
+                                            <Container sx={{ display: 'flex', flexDirection: 'row', padding: '20px' }}>
+                                                <Box fontSize={45}>{currTemp}°C</Box>
+                                                <Box width={'20px'}></Box>
+                                                <Box paddingTop={'3px'}>A 50 percent chance of rain means there is a 50 percent chance for any one spot in the forecast area to get wet during the forecast period.</Box>
+                                            </Container>
+                                        </Grid>
+                                        <Container sx={{ display: 'flex', justifyContent: 'start' }}>
+                                            <Button
+                                                sx={{
+                                                    color: 'white',
+                                                    backgroundColor: 'grey',
+                                                    borderRadius: '20px',
+                                                    margin: '10px',
+                                                    textAlign: 'start',
+                                                    // padding: '10px 20px',
+                                                }}
+                                            >
+                                                See Details
+                                            </Button>
+                                        </Container>
+                                        <Container>
+                                            {<div style={{ display: 'flex' }}>
+                                                {weather.list?.slice(0, 10).map((data, index) => (
+                                                    //style={{ border: "1px red solid" }}
+                                                    <div key={index} >
+                                                        <p>high {data.main.temp_max}°C</p>
+                                                        <p>low {data.main.temp_min}°C</p>
+                                                        {/* <p>Wind Speed: {data.wind.speed} m/s</p> */}
+                                                        <p>humidity {data.main.humidity}%</p>
+                                                        {/* <hr /> */}
+                                                    </div>
+                                                ))}
+                                            </div>}
+                                        </Container>
                                     </Container>
                                 </Grid>
-                                <Container sx={{ justifyContent: 'flex-start', textAlign: 'start', paddingTop: '10px', paddingBottom: '10px' }}>
-                                    Feels like {feelsLike}°C. {description}
-                                </Container>
-                                <Box height={'20px'}></Box>
-                                <Grid container textAlign={'start'} justifyContent={'start'} spacing={2}>
-                                    <Container sx={{ display: 'flex', flexDirection: 'row', padding: '20px' }}>
-                                        <Box fontSize={45}>{currTemp}°C</Box>
-                                        <Box width={'20px'}></Box>
-                                        <Box paddingTop={'3px'}>A 50 percent chance of rain means there is a 50 percent chance for any one spot in the forecast area to get wet during the forecast period.</Box>
-                                    </Container>
-                                </Grid>
-                                <Container sx={{ display: 'flex', justifyContent: 'start' }}>
-                                    <Button
-                                        sx={{
-                                            color: 'white',
-                                            backgroundColor: 'grey',
-                                            borderRadius: '20px',
-                                            margin: '10px',
-                                            textAlign: 'start',
-                                            // padding: '10px 20px',
-                                        }}
-                                    >
-                                        See Details
-                                    </Button>
-                                </Container>
-                                <Container>
-                                    {<div style={{ display: 'flex' }}>
-                                        {weather.list?.slice(0, 10).map((data, index) => (
-                                            //style={{ border: "1px red solid" }}
-                                            <div key={index} >
-                                                <p>high {data.main.temp_max}°C</p>
-                                                <p>low {data.main.temp_min}°C</p>
-                                                {/* <p>Wind Speed: {data.wind.speed} m/s</p> */}
-                                                <p>humidity {data.main.humidity}%</p>
-                                                {/* <hr /> */}
-                                            </div>
-                                        ))}
-                                    </div>}
-                                </Container>
-                            </Container>
-                        </Grid>
-                    </Grid>
+                            </Grid>
 
-                </div >
-            ) : (
-                <div>
-                    {/* <h1>Loading</h1>
+                        </div>
+                    );
+                }
+                else if (inputValue !== 'chandigarh') {
+                    return (
+                        <div>
+                            <h1>{inputValue}</h1>
+                        </div>
+                    );
+                }
+                else {
+                    return (
+                        <div>
+                            {/* <h1>Loading</h1>
                     <h2>{errorMessage}</h2> */}
-                    {errorMessage == null ? <h1>Loading</h1> : <ErrorPage errorMessage={errorMessage} />}
-                </div>
-            )}
+                            {errorMessage == null ? <h1>Loading</h1> : <ErrorPage errorMessage={errorMessage} />}
+                        </div>
+                    );
+                }
+            })()}
         </div>
-    )
+    );
+
 }
