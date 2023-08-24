@@ -1,6 +1,5 @@
 import { Box, Button, Container, Grid } from '@mui/material'
-import SearchBar from '../utils/SearchBar'
-import WeatherData from '../utils/WeatherData'
+import SearchBar, { useWeatherData } from '../utils/SearchBar'
 import Card1 from '../utils/Card1'
 import Card4 from '../utils/Card4'
 import Card3 from '../utils/Card3'
@@ -14,30 +13,63 @@ import { useState } from 'react'
 
 
 export default function Homepage() {
-    const [inputValue, setInputValue] = useState('chandigarh');
+    const [weather, setWeather] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
 
-     if (inputValue !== 'chandigarh') {
-        console.log(inputValue)
-    }
-
-    const { weather, errorMessage } = WeatherData(inputValue);
-
-
-    const handleSearch = (inputValue) => {
-        console.log('Input value in AnotherComponent:', inputValue);
-        setInputValue(inputValue);
+    const handleSearch = (inputValue, weather, errorMessage) => {
+        console.log('Input value in ParentComponent:', inputValue);
+        console.log('Weather data:', weather);
+        console.log('Error message:', errorMessage);
+        setWeather(weather);
+        setErrorMessage(errorMessage);
     };
 
-    let cityName = weather !== null ? weather.city?.name : '';
-    let humidity = weather !== null ? weather.list[0].main.humidity : 0;
-    let windSpeed = weather !== null ? weather.list[0].wind.speed : 0;
-    let windMain = weather !== null ? weather.list[0].weather[0].main : '';
-    let description = weather !== null ? weather.list[0].weather[0].description : '';
-    let weatherTime = weather !== null ? weather.list[0].dt_txt : 0;
-    let feelsLike = weather !== null ? weather.list[0].main.feels_like : 0;
-    let currTemp = weather !== null ? weather.list[0].main.temp : 0;
-    let maxTemp = weather !== null ? weather.list[0].main.temp_max : 0;
-    let minTemp = weather !== null ? weather.list[0].main.temp_min : 0;
+    async function fetchData(cityName) {
+        try {
+            const apiUrl = cityName === undefined ?
+                `https://api.openweathermap.org/data/2.5/forecast?q=rome&cnt=10&appid=5ebeb95832d3c8470601e4f254cd547a&units=metric` :
+                `https://api.openweathermap.org/data/2.5/forecast?q=${cityName}&cnt=10&appid=5ebeb95832d3c8470601e4f254cd547a&units=metric`;
+            const response = await fetch(apiUrl);
+            const data = await response.json();
+            if (!response.ok) {
+                throw new Error('Error fetching weather data');
+            }
+            setWeather(data);
+            setErrorMessage(null);
+        } catch (error) {
+            setWeather(null);
+            setErrorMessage(error.message);
+        }
+    }
+
+    console.log();
+
+    let cityName;
+    let humidity;
+    let windSpeed;
+    let windMain;
+    let description;
+    let weatherTime;
+    let feelsLike;
+    let currTemp;
+    let maxTemp;
+    let minTemp;
+
+    if (weather === '') {
+        fetchData('rome');
+    } else {
+        cityName = weather !== null ? weather.city?.name : 'rome';
+        humidity = weather !== null ? (weather.list[0]?.main?.humidity ?? 60) : 60;
+        windSpeed = weather !== null ? (weather.list[0]?.wind?.speed ?? 19) : 19;
+        windMain = weather !== null ? (weather.list[0]?.weather[0]?.main ?? 'hh') : 'hh';
+        description = weather !== null ? (weather.list[0]?.weather[0]?.description ?? 'gg') : 'gg';
+        weatherTime = weather !== null ? weather.list[0]?.dt_txt : '20';
+        feelsLike = weather !== null ? (weather.list[0]?.main?.feels_like ?? 10) : 10;
+        currTemp = weather !== null ? (weather.list[0]?.main?.temp ?? 10) : 10;
+        maxTemp = weather !== null ? (weather.list[0]?.main?.temp_max ?? 10) : 10;
+        minTemp = weather !== null ? (weather.list[0]?.main?.temp_min ?? 10) : 10;
+    }
+
 
     let Img = '';
     let value = description;
@@ -97,7 +129,7 @@ export default function Homepage() {
                             <Grid container item xs={12}>
                                 <Grid item xs={4} sx={{ border: "0.1px solid white", borderRadius: "15px", backdropFilter: 'blur(5px)' }}>
                                     <Box >
-                                        <SearchBar onSearch={handleSearch} />
+                                        <SearchBar onSearch={handleSearch} useWeatherData={setWeather} errorMessage={setErrorMessage} />
                                     </Box>
                                     <Box>
                                         <Card1 windSpeed={windSpeed} maxTemp={maxTemp} minTemp={minTemp} />
@@ -111,7 +143,7 @@ export default function Homepage() {
                                 </Grid>
                                 <Grid item xs={8} sx={{ backdropFilter: 'blur(1px)', justifyContent: 'space-evenly', backdropFilter: 'blur(1.9px)' }}>
                                     <Container>
-                                        <Grid item xs={12}>
+                                        <Grid>
                                             <Logo />
                                             <Container sx={{ justifyContent: 'flex-start', textAlign: 'start', paddingTop: '10px', paddingBottom: '20px' }}>
                                                 <p>Weather Forcast</p>
@@ -171,13 +203,13 @@ export default function Homepage() {
                         </div>
                     );
                 }
-                else if (inputValue !== 'chandigarh') {
-                    return (
-                        <div>
-                            <h1>{inputValue}</h1>
-                        </div>
-                    );
-                }
+                // else if (weather === null) {
+                //     return (
+                //         <div>
+                //             <h1>{console.log('true is ')}</h1>
+                //         </div>
+                //     );
+                // }
                 else {
                     return (
                         <div>
