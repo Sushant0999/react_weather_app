@@ -1,5 +1,5 @@
 import { Box, Button, Container, Grid } from '@mui/material'
-import SearchBar, { useWeatherData } from '../utils/SearchBar'
+import SearchBar from '../utils/SearchBar'
 import Card1 from '../utils/Card1'
 import Card4 from '../utils/Card4'
 import Card3 from '../utils/Card3'
