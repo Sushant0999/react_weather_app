@@ -8,6 +8,7 @@ import light_rain from "../images/rain.gif"
 import clear_sky from '../images/clear_sky.jpg'
 import broken_clouds from '../images/broken_clouds.jpg'
 import overcast_clouds from '../images/overcast_clouds.jpg'
+import thunderstorm from '../images/thunderstorm.jpg'
 import ErrorPage from './ErrorPage'
 import { useState } from 'react'
 
@@ -86,6 +87,9 @@ export default function Homepage() {
             break;
         case "light rain":
             Img = `${light_rain}`
+            break;
+        case "thunderstrom":
+            Img = `${thunderstorm}`
             break;
         default:
             Img = `${light_rain}`
